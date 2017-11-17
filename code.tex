@@ -1,0 +1,177 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{mathpazo}
+\usepackage{hyperref}
+\usepackage[doi=false,style=authoryear-comp,dashed=false,firstinits=true]{biblatex}
+\bibliography{bibliography}
+
+\begin{document}
+
+\title{Nullius in verba: why publishing source code is an essential part of geoscientific
+  model development}
+
+\maketitle
+
+Geoscientific Model Development has policies which attempt to ensure that
+the source code for the model developments we publish is publicly
+available. Why have these policies? The answer to this question is
+important not only to justify the responsibilities that it places on
+authors, but also in informing what qualifies as good practice in the
+publication of source code and data.
+
+Open science and open data are hot topics about which much has been written,
+including \cite{Brewer2017}\ explaining and justifying the AGU's open data
+policy. Here we focus on the particular issues that arise when that data is
+model code.
+
+The short version of the argument is given by the motto of the Royal
+Society: ``nullius in verba''. Scientists who publish a result without
+publishing the calculations undertaken to achieve that result are requiring
+the world to take them at their word, which is inimical to the scientific
+method, and the only really effective way to publish the calculations behind
+a model is to publish the source code.
+
+
+\section{Publishing computational science implies publishing code}
+
+\subsection{The correctness of geoscientific models demands code publication}
+
+Geoscientific models exist to enable computational experiments to be
+conducted. Those experiments take mathematical systems which are believed to
+represent important features of some geoscientific system, and calculate out
+the predicted behaviour of that mathematical system in the hope of gaining
+insight into the physical one. The hypothesis that such experiments are
+testing is:
+\begin{enumerate}
+\addtocounter{enumi}{-1}
+\item This mathematical system captures sufficient features
+of the physical system that useful insights about the physical system can be
+dawn from it.
+\end{enumerate}
+Where extensive experiments testing this hypothesis have
+been established, one might describe the mathematical system as, in some
+sense, a good model for the physical system.
+
+However establishing this evidence places rather strong demands on the
+modelling process. In particular there are a number of sub-hypotheses on
+which hypothesis 0 depends:
+\begin{enumerate}
+\item The model code faithfully represents the mathematical specification of
+  the model.
+\item The computation conducted used the code, input data and configuration intended.
+\item The analysis of the model output was itself the correct process.
+\end{enumerate}
+Publication of source code most directly addresses hypothesis 1, though
+hypotheses 2 and 3 are relevant to the best practice in code availability,
+and we will return to these in that context.
+
+Let's adopt a simple running example which may serve to illustrate the issue
+at hand. Suppose a scientist develops a new advection scheme, and implements
+it in an atmospheric dynamics model. They publish a paper describing the new
+scheme, and present the results of both idealised verification experiments,
+and realistic simulations showing an improvement in forecast skill. The code
+is not released. Surely, though, this is a good contribution to modelling
+science and valuable to the users of modelling results.
+
+In fact, the reader doesn't know this. Even assuming dilligence and honesty
+on the part of the author, there is simply not enough information to know
+what the scientists have done and therefore what conclusions could be
+drawn. In particular this approach suffers from two key flaws: bugs and the
+under-specification of the mathematical model. Indeed, these are both
+examples of hypothesis 1 failures, which differ in the source of the
+failure.
+
+\subsubsection{Bugs}
+
+Bugs occur in essentially all non-trivial code. Good software engineering
+practices such as code review and verification experiments can help reduce
+their incidence but can never provably eliminate them. For example
+undesirable behaviour may only occur in regimes that were not exercised by
+the test suite. The code may therefore unintentionally fail to implement the
+mathematics described and this may not be apparent from the tests run so
+far.
+
+\subsubsection{Underspecification of the model}
+
+Space in papers is limited, as is the ability of readers to absorb
+information and the time authors can spend preparing publications. This
+means that even very simple models are significantly underspecified in the
+paper. At the more complex end, it is not uncommon for an entire general
+circulation model to be described in a 20 page paper (including verification
+and some evaluation). This results in all sorts of details being
+omitted. Papers frequently omit boundary conditions, or only deal with
+simplified cases. More seriously, model code frequently contains fudges and
+short-cuts which are neglected in the documentation or paper. For example
+perhaps the advection scheme is provably bounded in exact arithmetic, but
+roundoff error causes tiny negative values which the model code flushes to
+zero to prevent some parametrisation from blowing up. Recording every
+implementation detail in the paper would be both impractical and would
+undermine the paper as a mechanism for communicating the core ideas behind a
+model in a manner intelligible to readers. 
+
+Both bugs and underspecification result in model code whose behaviour
+differs from the mathematical system that the author and/or reader believes
+is being run. Suppose a reader finds a surprising result in a published
+simulation using this model. What should they do? Assuming enough resources
+the reader could attempt to reimplement the model: except that
+underspecification prevents this. Even if they achieve this, or employ
+one or more different models of the same physical system, the most they will
+be able to achieve is to conclude that another model fails to reproduce the
+original result. Even given two implementations of the same algorithm, there
+is no guarantee that the results will be the same, and without source code
+it is impossible to establish which is correct.
+
+\subsection{Source code is necessary but not sufficient}
+
+
+
+
+\section{Journals and archives}
+
+A possible response to the issues caused by lack of access to the source
+code is to go back to the authors and ask them to provide code or otherwise
+assist in investigating a surprising result. This approach is strongly
+dependent on the authors being willing and able to assist. The latter is a
+particularly difficult problem: if code has not been curated properly it may
+not be possible to recover the exact version used in a paper; the scientist
+who did the work may have moved on; or the resources (human or
+computational) required to assist may not be available.
+
+All of this undermines the role of a journal as a persistant, public, and
+definitive archive of scientific results. In order for journals to fulfill
+this function, it must be possible for readers to trace the provenance of
+the results presented without further assistance by the authors. For source
+code (and other data) to fulfill this role, the data archive must be as
+persistent, public and definitive as the journal itself. Relatively small
+models and data sets can often be uploaded as supplements to the model and
+stored alongside the paper itself. However this approach is impractical for
+larger data sets. It is also not always clear that the very high standards
+of long-term preservation that journal publishers provide for articles are
+also applied to supplements. 
+
+\subsection{Websites and cloud services}
+
+An alternative authors frequently propose is to self-archive the model and data
+on a website, or on an online service such as GitHub. These solutions lack
+the required persistence: if the project ends or decides to move to a
+different hosting platform, the data will disappear from the location given
+in the paper. The mere fact that the author can unilaterally delete the data
+is incompatible with the requirement that journal publication be persistent
+and definitive. In this regard, the archival role of 
+
+\subsection{Third party archives}
+
+A far better solution for source code archiving is a suitable dedicated
+third party archive. The persistence and definitive character of such an
+archive depends on the institutional arrangements underpinning it. For
+source code, Zenodo provides a good option. It is institutionally
+underpinned by CERN and provides integration with GitHub which makes the
+archiving of git repositories particularly easy. 
+
+\section{Untouched by human hand}
+
+\section{Licences and lawyers}
+
+
+\end{document}
